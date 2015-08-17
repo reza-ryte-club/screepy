@@ -1,4 +1,6 @@
-Installation:
+<h1> Screepy lets you monitor your pc activities by taking screenshot after a certain interval and you can access the screenshots from remote location via Amazon S3.</h1>
+
+<b>Installation:</b>
 Install aws-cli and python.
 
 run the following command to set the key,secret and bucket of AWS account.
