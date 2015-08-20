@@ -1,16 +1,9 @@
 
 
 #!/usr/bin/env python
-# Module     : SysTrayIcon.py
-# Synopsis   : Windows System tray icon.
-# Programmer : Simon Brunning - simon@brunningonline.net
-# Date       : 11 April 2005
-# Notes      : Based on (i.e. ripped off from) Mark Hammond's
-#              win32gui_taskbar.py and win32gui_menu.py demos from PyWin32
-'''TODO
+# Writer     :     M Rezaur Rahman
+# Thanks to Simon Brunning - simon@brunningonline.net for SysTrayIcon Module
 
-For now, the demo at the bottom shows how to use it...'''
-         
 import os
 import sys
 import win32api
