@@ -14,8 +14,10 @@ import win32api
 import win32con
 import win32gui_struct
 import time
-import Image
-import ImageGrab
+#import Image
+#import ImageGrab
+from PIL import Image
+from PIL import ImageGrab
 import getpass
 import boto3
 import threading
